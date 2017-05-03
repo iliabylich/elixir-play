@@ -1,8 +1,31 @@
 defmodule GhCommits.Formatter do
+  @moduledoc """
+  Internal module that converts a list of commits (`GhCommits.Commit`) to a table.
+  """
+
   @vertical   "|"
   @horizontal "-"
   @headers %GhCommits.Commit{sha: "SHA", author: "Author", date: "Date", message: "Message"}
 
+  @doc """
+  Takes a list of commands an returns their string representation as a table.
+
+  ## Examples
+      iex> commit = %GhCommits.Commit{
+      ...    sha: "1234",
+      ...    author: "iliabylich",
+      ...    date: "2017-01-01",
+      ...    message: "Initial commit."
+      ...  }
+      iex> GhCommits.Formatter.to_table([commit])
+      \"\"\"
+      |--------------------------------------------------|
+      | SHA  | Author     | Date.      | Message         |
+      |--------------------------------------------------|
+      | 1234 | iliabylich | 2017-01-01 | Initial commit. |
+      |--------------------------------------------------|
+      \"\"\"
+  """
   def to_table(commits) do
     config = formatting_config(commits)
 
@@ -55,7 +78,7 @@ defmodule GhCommits.Formatter do
     @vertical <> Enum.join(items, @vertical) <> @vertical
   end
 
-  def to_cell(value, length) do
+  defp to_cell(value, length) do
     value |> String.ljust(length + 1) |> String.rjust(length + 2)
   end
 

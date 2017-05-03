@@ -1,6 +1,26 @@
 defmodule GhCommits.Runner do
+  @moduledoc """
+  Internal module for fetching commits from GH.
+  """
+
   @github_url Application.get_env(:gh_commits, :github_url)
 
+  @doc """
+  Sends a request to GitHub API and wraps a response using `GhCommits.Commit` struct.
+
+  ## Examples
+
+      iex> GhCommits.Runner.run(%{repo: "ruby/ruby", limit: 10})
+      [
+        %GhCommits.Commit{
+          sha: "...",
+          author: "...",
+          date: "...",
+          message: "..."
+        },
+        ...
+      ]
+  """
   def run(%{limit: limit, repo: _} = params) do
     url_for(params)
     |> HTTPoison.get

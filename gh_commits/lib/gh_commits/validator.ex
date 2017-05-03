@@ -1,6 +1,22 @@
 defmodule GhCommits.Validator do
-  def validate_list(list) do
-    list
+  @moduledoc """
+  Internal module for validating provided CLI argument.
+  """
+
+  @doc """
+  Validates provided map of commands and returns generated error messages.
+
+  ## Examples
+
+      iex> GhCommits.Validator.validate(%{repo: 123})
+      ["Wrong argument type repo: 123"]
+      iex> GhCommits.Validator.validate(%{limit: "25"})
+      ["Wrong argument type repo: \"25\""]
+      iex> GhCommits.Validator.validate(%{unsupported: :unknown})
+      ["Unknown command validate"]
+  """
+  def validate(map) do
+    map
     |> Enum.map(&validate_one/1)
     |> Enum.filter(&has_error?/1)
     |> Enum.map(&GhCommits.Validator.ErrorMessage.build/1)
@@ -24,6 +40,13 @@ defmodule GhCommits.Validator do
   defp has_error?(_),   do: true
 
   defmodule ErrorMessage do
+    @moduledoc """
+    Internal module for enerating error messages depending on error cases.
+    """
+
+    @doc """
+    Generates an error message for provided paramter metadata.
+    """
     def build({:wrong_argument_type, command, value}) do
       "Wrong argument type #{command}: #{inspect(value)}"
     end
